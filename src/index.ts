@@ -7,13 +7,20 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors()); 
+// Update CORS settings to allow both local and deployed frontends
+app.use(cors({
+  origin: [
+    'http://localhost:5173', // Local frontend
+    'http://blog-it-page-shh9.vercel.app' // Deployed frontend (your Vercel URL)
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+}));
 
 app.use(express.json());
 
-
-app.use('/api/auth', userRoutes); 
-
+// Use the user routes for the authentication API
+app.use('/api/auth', userRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
