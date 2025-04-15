@@ -1,0 +1,32 @@
+// datasource configuration
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// generator for Prisma Client
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User model with additional fields
+model User {
+  id        Int      @id @default(autoincrement()) // auto-incrementing ID
+  email     String   @unique                       // unique email field
+  password  String                                   // password field
+  firstName String?                                  // first name (optional)
+  lastName  String?                                  // last name (optional)
+  username  String?                                  // username (optional)
+  posts     Post[]                                   // relation to the Post model
+}
+
+// Post model with user relation
+model Post {
+  id        Int      @id @default(autoincrement()) // auto-incrementing ID
+  title     String                                  // post title
+  content   String                                  // post content
+  createdAt DateTime @default(now())               // auto set createdAt timestamp
+  updatedAt DateTime @updatedAt                   // auto update updatedAt timestamp
+  authorId  Int                                    // foreign key to User model
+  author    User   @relation(fields: [authorId], references: [id]) // relation to User model
+}
