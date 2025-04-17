@@ -1,23 +1,34 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
+// Extend the Request interface to include user information
 interface AuthenticatedRequest extends Request {
-  user?: { id: string }; 
+  user?: { id: string };
 }
 
-export const authenticate = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const authenticate = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+  
   const token = req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
-    return res.status(401).json({ message: 'No token provided' });
+    
+    res.status(401).json({ message: 'No token provided' });
+    return; 
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    req.user = decoded as { id: string }; 
+    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
+
+    
+    req.user = decoded;
+
+    
     next();
   } catch (error) {
-    console.error(error);
-    return res.status(401).json({ message: 'Invalid or expired token' });
+    
+    console.error('[JWT Error]', error);
+    res.status(401).json({ message: 'Invalid or expired token' });
+    return; 
   }
 };

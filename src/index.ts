@@ -2,16 +2,18 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './Routes/UserRoutes';
+import blogRoutes from './Routes/BRoutes';
+
 
 dotenv.config();
 
 const app = express();
 
-// Update CORS settings to allow both local and deployed frontends
+
 app.use(cors({
   origin: [
-    'http://localhost:5173', // Local frontend
-    'http://blog-it-page-shh9.vercel.app' // Deployed frontend (your Vercel URL)
+    'http://localhost:5173', 
+    'http://blog-it-page-shh9.vercel.app' 
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
@@ -19,8 +21,9 @@ app.use(cors({
 
 app.use(express.json());
 
-// Use the user routes for the authentication API
+
 app.use('/api/auth', userRoutes);
+app.use('/api/blogs', blogRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
