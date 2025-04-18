@@ -1,20 +1,20 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken'; // Import jwt
+import jwt from 'jsonwebtoken'; 
 import { prisma } from '../Prisma/client'; 
 
-// Create a new user
+
 export const createUser = async (req: Request, res: Response) => {
   const { email, password, firstName, lastName, username } = req.body;
 
   try {
-    // Hash the password before saving it
+    
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
       data: {
         email,
-        password: hashedPassword, // Save hashed password
+        password: hashedPassword, 
         firstName,
         lastName,
         username,
@@ -30,7 +30,7 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
-// Login user
+
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -40,13 +40,13 @@ export const loginUser = async (req: Request, res: Response) => {
     });
 
     if (user && await bcrypt.compare(password, user.password)) {
-      // Create a JWT token
+      
       const token = jwt.sign(
         { userId: user.id, email: user.email },
-        '1234', // Use a secure secret key
-        { expiresIn: '1h' } // Token expiration (1 hour)
+        '1234', 
+        { expiresIn: '1h' } 
       );
-      res.status(200).json({ message: 'Login successful', token }); // Send token
+      res.status(200).json({ message: 'Login successful', token }); 
     } else {
       res.status(400).json({ error: 'Invalid email or password' });
     }
@@ -59,7 +59,7 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-// Get user by ID
+
 export const getUserById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
